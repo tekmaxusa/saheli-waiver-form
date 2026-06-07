@@ -1,3 +1,5 @@
+import {effectiveAssetsBase} from './publicAsset';
+
 let cachedJsonUrl: string | null | undefined;
 
 function fromEnvOrStorage(): string | null {
@@ -27,7 +29,7 @@ export async function resolveGasWebAppUrl(): Promise<string | null> {
   if (cachedJsonUrl !== undefined) return cachedJsonUrl;
 
   try {
-    const base = import.meta.env.BASE_URL || '/';
+    const base = effectiveAssetsBase();
     const res = await fetch(`${base}gas-webapp.json`, {cache: 'no-store'});
     if (!res.ok) {
       cachedJsonUrl = null;
