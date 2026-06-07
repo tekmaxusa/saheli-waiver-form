@@ -1,5 +1,5 @@
 /**
- * Saheli Centennial — Waiver webhook (Google Apps Script)
+ * Saheli Eyebrow Threading — Multi-location waiver webhook (Google Apps Script)
  *
  * Deploy: Deploy → New deployment → Web app
  * - Execute as: Me
@@ -23,7 +23,11 @@ var SPREADSHEET_ID = '';
  * Script searches Inbox first, then Sent (same Google account as Web App "Execute as: Me").
  * If NOTIFICATION_EMAIL is a different account, that inbox cannot be labeled by this script — use a filter there instead.
  */
-var GMAIL_LABEL_WAIVER = 'Centennial Location';
+/**
+ * One Gmail label for ALL salon locations (Centennial, Aurora, etc.). Location is in the email subject
+ * ("New Waiver Submission - Aurora Location - …"). Rename freely; old "Centennial Location" label is unused.
+ */
+var GMAIL_LABEL_WAIVER = 'Saheli Eyebrow Waivers';
 /**
  * If true, after labeling the waiver thread it is removed from the Inbox (archived).
  * Mail stays under your custom label + "All Mail" — Primary inbox stays cleaner.
@@ -119,7 +123,7 @@ function humanSkin_(sc) {
  * so it appears under your custom label (and All Mail), not only Primary inbox.
  */
 function applyWaiverGmailLabel_(waiverRef) {
-  var labelName = GMAIL_LABEL_WAIVER || 'Centennial Location';
+  var labelName = GMAIL_LABEL_WAIVER || 'Saheli Eyebrow Waivers';
   var label = GmailApp.getUserLabelByName(labelName);
   if (!label) {
     label = GmailApp.createLabel(labelName);
@@ -222,10 +226,10 @@ function getTargetSheet_() {
 
 /**
  * Run once from the Apps Script editor to trigger Gmail permission and create the waiver label.
- * After Run, check Gmail → Labels (or Settings → Labels) for "Centennial Location".
+ * After Run, check Gmail → Labels for the name set in GMAIL_LABEL_WAIVER (default: Saheli Eyebrow Waivers).
  */
 function saheliGmailLabelSmokeTest() {
-  var name = GMAIL_LABEL_WAIVER || 'Centennial Location';
+  var name = GMAIL_LABEL_WAIVER || 'Saheli Eyebrow Waivers';
   var L = GmailApp.getUserLabelByName(name) || GmailApp.createLabel(name);
   Logger.log('Gmail label ready: ' + L.getName());
 }
@@ -332,7 +336,12 @@ function doPost(e) {
     if (!postData) {
       throw new Error('Empty POST body. Redeploy web app and use the latest waiver form.');
     }
-    Logger.log('doPost ok parse client=' + (postData.clientName || '?'));
+    Logger.log(
+      'doPost ok client=' +
+        (postData.clientName || '?') +
+        ' location=' +
+        (postData.waiverMeta && postData.waiverMeta.locationShortName ? postData.waiverMeta.locationShortName : '—')
+    );
 
     var timestamp = new Date().toISOString();
     var clientName = postData.clientName || '';
@@ -519,7 +528,7 @@ function saheliSendTestEmail() {
 function saheliWebhookSelfTest() {
   /** Same URL as Web App deployment (update if you redeploy). */
   var url =
-    'https://script.google.com/macros/s/AKfycbyqBl1-IxpJSOzzHEhwODgjiKleYsgtHQ-QRIyYA8Jye6Ogdjhx9C5Acy2nSgRGRU0U/exec';
+    'https://script.google.com/macros/s/AKfycbwr0FWGNRzjkQOLx6LH2TV02yBTvhhTMGWLnp9pFcyCMqLk4hQb1di45hswljNUuSTT/exec';
   if (!url || url.indexOf('script.google.com') === -1) {
     throw new Error('Set var url in saheliWebhookSelfTest to your /exec URL.');
   }
