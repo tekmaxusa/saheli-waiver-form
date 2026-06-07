@@ -1,0 +1,6 @@
+{
+  "name": "Saheli Eyebrow Threading Waiver Form",
+  "description": "Production-ready online waiver form for Saheli Eyebrow Threading Centennial location, with digital signature, jsPDF generation, and Google Sheets & Apps Script email integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
