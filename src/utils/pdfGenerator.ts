@@ -45,7 +45,10 @@ async function loadPdfLogo_(): Promise<LogoLoad> {
   const urls = [publicAssetUrl('saheli-spa-logo.png')];
   for (const url of urls) {
     try {
-      const res = await fetch(url);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 12000);
+      const res = await fetch(url, {signal: ctrl.signal});
+      clearTimeout(timer);
       if (!res.ok) continue;
       const blob = await res.blob();
       const ct = blob.type || '';

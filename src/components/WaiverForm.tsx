@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { WaiverFormData, WaiverSubmissionMeta, WaiverSubmissionPayload } from '../types';
 import SignaturePad from './SignaturePad';
 import { generateWaiverPDF, pdfBrandingForLocation } from '../utils/pdfGenerator';
+import { getPdfBase64FromJsPDF, yieldToMainThread } from '../utils/pdfBase64';
 import { resolveGasWebAppUrl } from '../utils/resolveGasWebAppUrl';
 import type { WaiverLocationConfig } from '../merchants/types';
 
@@ -72,6 +73,8 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
   const [formData, setFormData] = useState<WaiverFormData>(getInitialFormData());
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /** Lets the button show why the wait feels long (PDF vs network). */
+  const [submitUiPhase, setSubmitUiPhase] = useState<'pdf' | 'send'>('pdf');
   const [selectedDateTime, setSelectedDateTime] = useState('');
 
   const formatToReadableDateTime = (dateTimeString: string): string => {
@@ -236,14 +239,16 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
     }
 
     setIsSubmitting(true);
+    setSubmitUiPhase('pdf');
+    await yieldToMainThread();
 
     const submittedAtISO = new Date().toISOString();
 
     try {
+      const gasUrlPromise = resolveGasWebAppUrl();
       const branding = pdfBrandingForLocation(location);
       const { doc, filename } = await generateWaiverPDF(formData, submittedAtISO, branding);
-      const pdfBytes = doc.output('datauristring');
-      const base64PdfPart = pdfBytes.split('base64,')[1];
+      const base64PdfPart = await getPdfBase64FromJsPDF(doc);
 
       const waiverMeta: WaiverSubmissionMeta = {
         merchantSlug: location.merchantSlug,
@@ -262,20 +267,28 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
         waiverMeta,
       };
 
-      const gasUrl = await resolveGasWebAppUrl();
+      setSubmitUiPhase('send');
+      const gasUrl = await gasUrlPromise;
       if (gasUrl) {
         const payload = JSON.stringify(submissionPayload);
         const body = new URLSearchParams();
         body.set('payload', payload);
-        // form body is reliable for Google Apps Script web apps (e.parameter.payload)
-        await fetch(gasUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-          },
-          body: body.toString(),
-        });
+        const ctrl = new AbortController();
+        const postTimer = setTimeout(() => ctrl.abort(), 90000);
+        try {
+          // form body is reliable for Google Apps Script web apps (e.parameter.payload)
+          await fetch(gasUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            },
+            body: body.toString(),
+            signal: ctrl.signal,
+          });
+        } finally {
+          clearTimeout(postTimer);
+        }
         if (import.meta.env.DEV) {
           console.info('[waiver] POST sent to Apps Script, ~' + Math.round(payload.length / 1024) + ' KB');
         }
@@ -305,6 +318,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       });
     } finally {
       setIsSubmitting(false);
+      setSubmitUiPhase('pdf');
     }
   };
 
@@ -865,7 +879,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
           {isSubmitting ? (
             <>
               <Loader2 className="animate-spin text-white" size={18} aria-hidden />
-              Submitting…
+              {submitUiPhase === 'send' ? 'Sending…' : 'Building PDF…'}
             </>
           ) : (
             'Submit waiver'
