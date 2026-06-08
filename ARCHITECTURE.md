@@ -13,25 +13,24 @@ This document summarizes the refactor for **TrustedWaiver-style URLs**, **GitHub
 ```
 src/
   merchants/
-    types.ts                 # WaiverLocationConfig
-    registry.ts              # resolveWaiverLocation(), listAllWaiverHrefPaths()
+    types.ts                 # WaiverLocationConfig (publicRouteSlug + …)
+    registry.ts              # resolveWaiverSiteSlug(), resolveWaiverLocation(), listAllWaiverHrefPaths()
     sahelieyebrow/
       locations.ts           # SAHELI_EYEBROW_LOCATIONS (5 entries)
   routes/
     HomePage.tsx             # Index: links to each waiver path
-    WaiverRoutePage.tsx      # :merchantSlug/:waiverSlug → App or 404
+    WaiverRoutePage.tsx      # :waiverSiteSlug or legacy :merchantSlug/:waiverSlug
     NotFoundPage.tsx
   components/                # Shared UI
   utils/pdfGenerator.ts      # Shared PDF + pdfBrandingForLocation()
-sahelieyebrow/
-  waiver-from-centennial-location/index.html
-  waiver-from-aurora-location/index.html
-  … (5 waivers, each MPA entry for GitHub Pages)
+sahelieyebrow-centennial/index.html
+  sahelieyebrow-aurora/index.html
+  … (5 waivers: one folder per public slug for GitHub Pages)
 index.html                   # Root “choose location” entry
 google-apps-script/Code.gs   # Email subject, Sheets Location, recipient
 ```
 
-**Future merchant example:** add `src/merchants/otherbrand/locations.ts`, append to `ALL_LOCATIONS` in `registry.ts`, add `otherbrand/waiver-form/index.html`, register path in `vite.config.ts` `WAIVER_HTML_PATHS`.
+**Future merchant example:** add `src/merchants/otherbrand/locations.ts`, append to `ALL_LOCATIONS` in `registry.ts`, add `otherbrand-location/index.html`, register path in `vite.config.ts` `WAIVER_HTML_PATHS`.
 
 ## C. Reusable components
 
@@ -44,8 +43,8 @@ google-apps-script/Code.gs   # Email subject, Sheets Location, recipient
 
 ## D. Scalability plan
 
-1. **URL = merchant + waiver page:** React Router `:merchantSlug/:waiverSlug`.
-2. **Registry:** `resolveWaiverLocation()` — extend `ALL_LOCATIONS`.
+1. **URL:** Primary path is one segment, e.g. `sahelieyebrow-aurora` (`publicRouteSlug`). Legacy two-segment `sahelieyebrow/waiver-from-…-location` still resolves.
+2. **Registry:** `resolveWaiverSiteSlug()`, `resolveWaiverLocation()` — extend `ALL_LOCATIONS`.
 3. **Build entries:** Add paths to `WAIVER_HTML_PATHS` in `vite.config.ts`.
 4. **Recipient email:** `NOTIFICATION_EMAIL` in Apps Script (can move to Script Properties later). Payload **`waiverMeta`** supports future routing.
 
@@ -58,8 +57,8 @@ google-apps-script/Code.gs   # Email subject, Sheets Location, recipient
 ## Local URLs (dev, base `/`)
 
 - `http://localhost:3000/` — picker  
-- `http://localhost:3000/sahelieyebrow/waiver-from-centennial-location/` (and Aurora, Thornton, Denver, Parker)
+- `http://localhost:3000/sahelieyebrow-centennial/` (and Aurora, Thornton, Denver, Parker slugs)
 
 ## GitHub Pages
 
-Example: `https://<user>.github.io/<repo>/sahelieyebrow/waiver-from-centennial-location/`
+Example: `https://<user>.github.io/<repo>/sahelieyebrow-aurora/`

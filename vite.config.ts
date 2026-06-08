@@ -6,22 +6,21 @@ import { defineConfig } from 'vite';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-/** TrustedWaiver-style paths; each folder has its own index.html for GitHub Pages. */
+/** One folder per public waiver URL (GitHub Pages MPA entries). */
 const WAIVER_HTML_PATHS = [
-  'sahelieyebrow/waiver-from-centennial-location',
-  'sahelieyebrow/waiver-from-aurora-location',
-  'sahelieyebrow/waiver-from-thornton-location',
-  'sahelieyebrow/waiver-from-denver-location',
-  'sahelieyebrow/waiver-from-parker-location',
+  'sahelieyebrow-centennial',
+  'sahelieyebrow-aurora',
+  'sahelieyebrow-thornton',
+  'sahelieyebrow-denver',
+  'sahelieyebrow-parker',
 ] as const;
 
 function buildRollupInput(): Record<string, string> {
   const input: Record<string, string> = {
     main: path.resolve(__dirname, 'index.html'),
   };
-  for (const rel of WAIVER_HTML_PATHS) {
-    const key = rel.replace(/\//g, '-');
-    input[key] = path.resolve(__dirname, rel, 'index.html');
+  for (const folder of WAIVER_HTML_PATHS) {
+    input[folder] = path.resolve(__dirname, folder, 'index.html');
   }
   return input;
 }

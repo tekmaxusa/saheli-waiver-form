@@ -256,7 +256,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
         locationShortName: location.emailSubjectLocation,
         locationAddress: location.addressLine,
         locationPhone: location.phone,
-        routePath: `${location.merchantSlug}/${location.waiverPageSlug}`,
+        routePath: location.publicRouteSlug,
       };
 
       const submissionPayload: WaiverSubmissionPayload = {
@@ -323,29 +323,29 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8" id="saheli-waiver-form" noValidate>
+    <form onSubmit={handleSubmit} className="space-y-3" id="saheli-waiver-form" noValidate>
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-5"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-customer-profile"
         aria-labelledby="section-customer-profile-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section I
           </span>
           <h2
             id="section-customer-profile-heading"
-            className="text-base font-semibold text-neutral-900 tracking-tight"
+            className="text-sm font-semibold text-neutral-900 tracking-tight"
           >
             Client information
           </h2>
-          <p className="text-sm text-neutral-500 mt-1 leading-relaxed">
+          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">
             Legal name and contact details for your visit.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-          <div id="err-container-clientName" className="space-y-1.5 sm:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-3 gap-y-2">
+          <div id="err-container-clientName" className="space-y-1 sm:col-span-2">
             <label htmlFor="clientName" className="block text-xs font-medium text-neutral-600">
               Full name <span className="text-red-500">*</span>
             </label>
@@ -358,7 +358,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               onChange={(e) => handleTextChange('clientName', e.target.value)}
               aria-invalid={!!errors.clientName}
               aria-describedby={errors.clientName ? 'clientName-error' : undefined}
-              className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
+              className={`w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
                 errors.clientName
                   ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
                   : 'border-neutral-200 focus:border-neutral-900 focus:ring-neutral-100'
@@ -372,7 +372,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             ) : null}
           </div>
 
-          <div id="err-container-phoneNumber" className="space-y-1.5">
+          <div id="err-container-phoneNumber" className="space-y-1">
             <label htmlFor="phoneNumber" className="block text-xs font-medium text-neutral-600">
               Phone <span className="text-red-500">*</span>
             </label>
@@ -386,7 +386,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               onChange={(e) => handleTextChange('phoneNumber', e.target.value)}
               aria-invalid={!!errors.phoneNumber}
               aria-describedby={errors.phoneNumber ? 'phoneNumber-error' : undefined}
-              className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
+              className={`w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
                 errors.phoneNumber
                   ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
                   : 'border-neutral-200 focus:border-neutral-900 focus:ring-neutral-100'
@@ -400,7 +400,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             ) : null}
           </div>
 
-          <div id="err-container-email" className="space-y-1.5">
+          <div id="err-container-email" className="space-y-1">
             <label htmlFor="email" className="block text-xs font-medium text-neutral-600">
               Email <span className="text-neutral-400 font-normal">(optional)</span>
             </label>
@@ -413,7 +413,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               onChange={(e) => handleTextChange('email', e.target.value)}
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? 'email-error' : undefined}
-              className={`w-full px-3.5 py-2.5 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
+              className={`w-full px-3 py-2 border rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-offset-0 ${
                 errors.email
                   ? 'border-red-400 focus:border-red-500 focus:ring-red-100'
                   : 'border-neutral-200 focus:border-neutral-900 focus:ring-neutral-100'
@@ -429,55 +429,41 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             )}
           </div>
 
-          <div className="space-y-1.5 sm:col-span-2">
+          <div className="space-y-1 sm:col-span-2">
             <label htmlFor="dateOfBirth" className="block text-xs font-medium text-neutral-600">
               Date of birth <span className="text-neutral-400 font-normal">(optional)</span>
             </label>
-            <div className="flex flex-col gap-2 max-w-lg">
-              <input
-                type="date"
-                id="dateOfBirth"
-                name="dateOfBirth"
-                value={
-                  /^\d{4}-\d{2}-\d{2}$/.test(formData.dateOfBirth.trim())
-                    ? formData.dateOfBirth.trim().slice(0, 10)
-                    : ''
-                }
-                onChange={(e) => handleTextChange('dateOfBirth', e.target.value)}
-                className="w-full max-w-xs px-3.5 py-2.5 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
-              />
-              <input
-                type="text"
-                id="dateOfBirthText"
-                name="dateOfBirthText"
-                autoComplete="bday"
-                value={formData.dateOfBirth}
-                onChange={(e) => handleTextChange('dateOfBirth', e.target.value)}
-                className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
-                placeholder="Or type your date (e.g. Jan 15, 1990, 03/15/1990, or any format you prefer)"
-              />
-            </div>
-            <p className="text-xs text-neutral-400">
-              Use the calendar to pick year/month/day, or type freely in the second field.
-            </p>
+            <input
+              type="date"
+              id="dateOfBirth"
+              name="dateOfBirth"
+              autoComplete="bday"
+              value={
+                /^\d{4}-\d{2}-\d{2}$/.test(formData.dateOfBirth.trim())
+                  ? formData.dateOfBirth.trim().slice(0, 10)
+                  : ''
+              }
+              onChange={(e) => handleTextChange('dateOfBirth', e.target.value)}
+              className="w-full max-w-xs px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
+            />
           </div>
 
-          <div className="space-y-1.5 sm:col-span-2">
+          <div className="space-y-1 sm:col-span-2">
             <label htmlFor="address" className="block text-xs font-medium text-neutral-600">
               Address <span className="text-neutral-400 font-normal">(optional)</span>
             </label>
             <textarea
               id="address"
               name="address"
-              rows={3}
+              rows={2}
               value={formData.address}
               onChange={(e) => handleTextChange('address', e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900 resize-y min-h-[88px]"
+              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900 resize-y min-h-[72px]"
               placeholder="Street, city, state, ZIP"
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label htmlFor="emergencyContactName" className="block text-xs font-medium text-neutral-600">
               Emergency contact name <span className="text-neutral-400 font-normal">(optional)</span>
             </label>
@@ -487,12 +473,12 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               name="emergencyContactName"
               value={formData.emergencyContactName}
               onChange={(e) => handleTextChange('emergencyContactName', e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
+              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
               placeholder="Contact name"
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-1">
             <label htmlFor="emergencyContactPhone" className="block text-xs font-medium text-neutral-600">
               Emergency contact phone <span className="text-neutral-400 font-normal">(optional)</span>
             </label>
@@ -503,7 +489,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               inputMode="tel"
               value={formData.emergencyContactPhone}
               onChange={(e) => handleTextChange('emergencyContactPhone', e.target.value)}
-              className="w-full px-3.5 py-2.5 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
+              className="w-full px-3 py-2 border border-neutral-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
               placeholder="Phone"
             />
           </div>
@@ -511,21 +497,21 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       </section>
 
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-5"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-treatment-selections"
         aria-labelledby="section-treatment-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section II
           </span>
-          <h2 id="section-treatment-heading" className="text-base font-semibold text-neutral-900 tracking-tight">
+          <h2 id="section-treatment-heading" className="text-sm font-semibold text-neutral-900 tracking-tight">
             Treatment type
           </h2>
-          <p className="text-sm text-neutral-500 mt-1 leading-relaxed">Check all that apply.</p>
+          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">Check all that apply.</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
           {(
             [
               { id: 'threadingTinting', label: 'Threading and Tinting' },
@@ -544,7 +530,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             return (
               <label
                 key={service.id}
-                className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer select-none transition-colors ${
+                className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer select-none transition-colors ${
                   isChecked
                     ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
                     : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-600'
@@ -563,9 +549,9 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             );
           })}
 
-          <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col sm:flex-row gap-3 pt-1">
+          <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col sm:flex-row gap-2 pt-0.5">
             <label
-              className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer select-none self-start transition-colors ${
+              className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer select-none self-start transition-colors ${
                 formData.services.others
                   ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
                   : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-600'
@@ -587,7 +573,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
                 value={formData.services.othersDetail}
                 onChange={(e) => handleServiceChange('othersDetail', e.target.value)}
                 placeholder="Please add detail for others"
-                className="flex-1 px-3.5 py-2.5 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-neutral-900 bg-white"
+                className="flex-1 px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-neutral-900 bg-white"
               />
             ) : null}
           </div>
@@ -595,21 +581,21 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       </section>
 
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-5"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-skin-status"
         aria-labelledby="section-skin-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section III
           </span>
-          <h2 id="section-skin-heading" className="text-base font-semibold text-neutral-900 tracking-tight">
+          <h2 id="section-skin-heading" className="text-sm font-semibold text-neutral-900 tracking-tight">
             Skin conditions
           </h2>
-          <p className="text-sm text-neutral-500 mt-1 leading-relaxed">Check any that apply.</p>
+          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">Check any that apply.</p>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
           {(
             [
               { id: 'acne', label: 'Acne' },
@@ -625,7 +611,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             return (
               <label
                 key={cond.id}
-                className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer select-none transition-colors ${
+                className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer select-none transition-colors ${
                   isChecked
                     ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
                     : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-600'
@@ -645,9 +631,9 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
             );
           })}
 
-          <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col sm:flex-row gap-3 pt-1">
+          <div className="col-span-2 sm:col-span-3 lg:col-span-4 flex flex-col sm:flex-row gap-2 pt-0.5">
             <label
-              className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer select-none self-start transition-colors ${
+              className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer select-none self-start transition-colors ${
                 formData.skinConditions.others
                   ? 'border-neutral-900 bg-neutral-50 text-neutral-900'
                   : 'border-neutral-200 hover:border-neutral-300 bg-white text-neutral-600'
@@ -667,7 +653,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
                 value={formData.skinConditions.othersDetail}
                 onChange={(e) => handleSkinConditionChange('othersDetail', e.target.value)}
                 placeholder="Please add detail for others"
-                className="flex-1 px-3.5 py-2.5 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-neutral-900 bg-white"
+                className="flex-1 px-3 py-2 text-sm border border-neutral-200 rounded-lg focus:outline-none focus:border-neutral-900 bg-white"
               />
             ) : null}
           </div>
@@ -675,29 +661,29 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       </section>
 
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-6"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-medical-questions"
         aria-labelledby="section-medical-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section IV
           </span>
-          <h2 id="section-medical-heading" className="text-base font-semibold text-neutral-900 tracking-tight">
+          <h2 id="section-medical-heading" className="text-sm font-semibold text-neutral-900 tracking-tight">
             Medical disclosures
           </h2>
         </div>
 
-        <div className="space-y-6">
-          <fieldset id="err-container-medicalQuestions-takingMedications" className="space-y-3 border-0 p-0 m-0">
-            <legend className="text-sm font-medium text-neutral-800 leading-relaxed px-0">
+        <div className="space-y-3">
+          <fieldset id="err-container-medicalQuestions-takingMedications" className="space-y-2 border-0 p-0 m-0">
+            <legend className="text-xs font-medium text-neutral-800 leading-snug px-0">
               Are you currently taking any medications (including topical)? <span className="text-red-500">*</span>
             </legend>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Medications">
               <button
                 type="button"
                 onClick={() => handleMedicalQuestionChange('takingMedications', true)}
-                className={`px-5 py-2 text-xs font-semibold rounded-lg border transition-colors ${
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-colors ${
                   formData.medicalQuestions.takingMedications === true
                     ? 'bg-neutral-900 border-neutral-900 text-white'
                     : 'bg-white border-neutral-200 text-neutral-600 hover:border-neutral-300'
@@ -708,7 +694,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               <button
                 type="button"
                 onClick={() => handleMedicalQuestionChange('takingMedications', false)}
-                className={`px-5 py-2 text-xs font-semibold rounded-lg border transition-colors ${
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-colors ${
                   formData.medicalQuestions.takingMedications === false
                     ? 'bg-neutral-900 border-neutral-900 text-white'
                     : 'bg-white border-neutral-200 text-neutral-600 hover:border-neutral-300'
@@ -726,16 +712,16 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
 
           <fieldset
             id="err-container-medicalQuestions-takingRetinolAccutane"
-            className="space-y-3 border-0 p-0 m-0 pt-6 border-t border-neutral-100"
+            className="space-y-2 border-0 p-0 m-0 pt-3 border-t border-neutral-100"
           >
-            <legend className="text-sm font-medium text-neutral-800 leading-relaxed px-0">
+            <legend className="text-xs font-medium text-neutral-800 leading-snug px-0">
               Are you currently taking any Retinol, Accutane, or Hydroquinone? <span className="text-red-500">*</span>
             </legend>
             <div className="flex flex-wrap gap-2" role="group" aria-label="Retinol Accutane Hydroquinone">
               <button
                 type="button"
                 onClick={() => handleMedicalQuestionChange('takingRetinolAccutane', true)}
-                className={`px-5 py-2 text-xs font-semibold rounded-lg border transition-colors ${
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-colors ${
                   formData.medicalQuestions.takingRetinolAccutane === true
                     ? 'bg-neutral-900 border-neutral-900 text-white'
                     : 'bg-white border-neutral-200 text-neutral-600 hover:border-neutral-300'
@@ -746,7 +732,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               <button
                 type="button"
                 onClick={() => handleMedicalQuestionChange('takingRetinolAccutane', false)}
-                className={`px-5 py-2 text-xs font-semibold rounded-lg border transition-colors ${
+                className={`px-4 py-1.5 text-xs font-semibold rounded-lg border transition-colors ${
                   formData.medicalQuestions.takingRetinolAccutane === false
                     ? 'bg-neutral-900 border-neutral-900 text-white'
                     : 'bg-white border-neutral-200 text-neutral-600 hover:border-neutral-300'
@@ -765,27 +751,27 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       </section>
 
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-5"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-liability-terms"
         aria-labelledby="section-consent-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section V
           </span>
-          <h2 id="section-consent-heading" className="text-base font-semibold text-neutral-900 tracking-tight">
+          <h2 id="section-consent-heading" className="text-sm font-semibold text-neutral-900 tracking-tight">
             Consent & acknowledgment
           </h2>
         </div>
 
-        <blockquote className="border border-neutral-200 bg-neutral-50 rounded-xl p-4 sm:p-5 text-sm text-neutral-700 leading-relaxed not-italic">
+        <blockquote className="border border-neutral-200 bg-neutral-50 rounded-lg p-3 text-xs text-neutral-700 leading-snug not-italic">
           I understand that skincare treatments carry potential risks including, but not limited to, redness,
           irritation, and allergic reaction. I confirm that the above information is accurate to the best of my
           knowledge. I consent to the treatment(s) discussed and release the provider of any liability.
         </blockquote>
 
-        <div id="err-container-acceptedTerms" className="space-y-2">
-          <label className="flex items-start gap-3 p-4 border border-neutral-200 rounded-xl bg-white hover:bg-neutral-50/80 transition-colors cursor-pointer">
+        <div id="err-container-acceptedTerms" className="space-y-1.5">
+          <label className="flex items-start gap-2 p-2.5 border border-neutral-200 rounded-lg bg-white hover:bg-neutral-50/80 transition-colors cursor-pointer">
             <input
               type="checkbox"
               id="acceptedTerms"
@@ -799,7 +785,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
               }}
               className="w-4 h-4 rounded border-neutral-300 accent-neutral-900 cursor-pointer mt-0.5 shrink-0"
             />
-            <span className="text-sm font-medium text-neutral-800 leading-relaxed">
+            <span className="text-xs font-medium text-neutral-800 leading-snug">
               I have read and agree to the statement above. <span className="text-red-500">*</span>
             </span>
           </label>
@@ -812,18 +798,18 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
       </section>
 
       <section
-        className="bg-white rounded-2xl p-6 sm:p-8 border border-neutral-200/60 shadow-sm space-y-6"
+        className="bg-white rounded-lg p-3 sm:p-4 border border-neutral-200/60 shadow-sm space-y-3"
         id="section-signature-seal"
         aria-labelledby="section-signature-heading"
       >
-        <div className="border-b border-neutral-100 pb-4">
-          <span className="text-[10px] uppercase font-semibold tracking-widest text-neutral-400 block mb-1">
+        <div className="border-b border-neutral-100 pb-2">
+          <span className="text-[9px] uppercase font-semibold tracking-widest text-neutral-400 block mb-0.5">
             Section VI
           </span>
-          <h2 id="section-signature-heading" className="text-base font-semibold text-neutral-900 tracking-tight">
+          <h2 id="section-signature-heading" className="text-sm font-semibold text-neutral-900 tracking-tight">
             Signature & date
           </h2>
-          <p className="text-sm text-neutral-500 mt-1 leading-relaxed">
+          <p className="text-xs text-neutral-500 mt-0.5 leading-snug">
             Sign below, save your signature, then confirm the date and time.
           </p>
         </div>
@@ -848,7 +834,7 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
           />
         </div>
 
-        <div className="space-y-1.5 max-w-md">
+        <div className="space-y-1 max-w-md">
           <label htmlFor="signature-date-picker" className="block text-xs font-medium text-neutral-600">
             Date / time <span className="text-red-500">*</span>
           </label>
@@ -864,16 +850,16 @@ export default function WaiverForm({ onSubmitSuccess, location }: WaiverFormProp
                 signatureDate: formatToReadableDateTime(val),
               }));
             }}
-            className="w-full px-3.5 py-2.5 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
+            className="w-full px-3 py-2 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:border-neutral-900"
           />
         </div>
       </section>
 
-      <div className="pt-2 flex flex-col items-stretch sm:items-center gap-3 max-w-md mx-auto w-full">
+      <div className="pt-1 flex flex-col items-stretch sm:items-center gap-2 max-w-md mx-auto w-full">
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full text-center inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm px-6 py-3 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full text-center inline-flex items-center justify-center gap-2 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           id="submit-waiver-btn"
         >
           {isSubmitting ? (

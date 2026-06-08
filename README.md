@@ -15,7 +15,7 @@ npm run dev
 Open:
 
 - `http://localhost:3000/` — links to each waiver  
-- `http://localhost:3000/sahelieyebrow/waiver-from-centennial-location/` (and Aurora, Thornton, Denver, Parker — same path pattern as TrustedWaiver)
+- `http://localhost:3000/sahelieyebrow-centennial/` (and `/sahelieyebrow-aurora/`, `/sahelieyebrow-thornton/`, `/sahelieyebrow-denver/`, `/sahelieyebrow-parker/`). Old two-segment URLs like `/sahelieyebrow/waiver-from-aurora-location/` still work.
 
 ## Deploy to GitHub Pages
 

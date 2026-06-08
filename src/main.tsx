@@ -15,6 +15,7 @@ createRoot(document.getElementById('root')!).render(
       <Routes>
         <Route index element={<HomePage />} />
         <Route path=":merchantSlug/:waiverSlug" element={<WaiverRoutePage />} />
+        <Route path=":waiverSiteSlug" element={<WaiverRoutePage />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

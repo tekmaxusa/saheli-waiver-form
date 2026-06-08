@@ -141,8 +141,8 @@ export default function SignaturePad({
   };
 
   return (
-    <div className="w-full space-y-2">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="w-full space-y-1.5">
+      <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between">
         <label
           className="text-[10px] font-bold text-neutral-500 uppercase tracking-wider"
           htmlFor="waiver-signature-pad"
@@ -176,7 +176,7 @@ export default function SignaturePad({
 
       <div
         ref={containerRef}
-        className={`relative h-56 w-full rounded-xl overflow-hidden border-2 transition-colors ${
+        className={`relative h-48 w-full rounded-lg overflow-hidden border-2 transition-colors ${
           error ? 'border-red-400' : 'border-neutral-300 focus-within:border-neutral-900'
         }`}
       >
